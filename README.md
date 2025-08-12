@@ -7,7 +7,7 @@ The data i'll use will be data from 2020-2023
 
 ### data cleaning
 The raw data was really noisy and dirty so i cleaned it and did some adjustments
-*picture of original data*
+![WVHT anomalies](raw.png)
 
 Cleaning - there were alot of missing samples along the way, some of them made big gaps and some 1 sample gap, in time series analysis it's very problematic to work with non continous data. 
 For the big gaps, i left them as is, for the medium gaps, i used techinques like linear interpolation, and for the small ones i used MA to fill in.
