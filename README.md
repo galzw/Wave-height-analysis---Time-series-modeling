@@ -75,8 +75,3 @@ This project demonstrates the application of **econometric modeling techniques**
 The cleaning process addressed irregular sampling and multiple seasonalities, while ARFIMA modeling captured the long-memory nature of wave height dynamics.
 
 
-![final prediction test1](output_pred_tur.png)
-![final prediction test2](output_predc.png)
-![final predictions train](output_pred.png)
-
-
