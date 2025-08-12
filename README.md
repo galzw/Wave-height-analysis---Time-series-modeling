@@ -1,35 +1,82 @@
-This is an independet project to model the behaviour of wave height, we'll use econometrical tools for that analysis.
+# Modeling Wave Height Dynamics – An Econometric Approach
 
-### data
-The data is taken from [NOAA NDBC]([https://www.ndbc.noaa.gov/station_page.php?station=46269](https://www.ndbc.noaa.gov/)) and more specifically - from station 46269 – Point Santa Cruz
-The data i'll use will be data from 2020-2023
+This independent project models the behavior of **significant wave height** using econometric tools, with a focus on identifying and capturing seasonal patterns and long-memory processes.
+
+---
+
+## Data
+
+The dataset comes from the [NOAA National Data Buoy Center (NDBC)](https://www.ndbc.noaa.gov/) – specifically from **Station 46269 (Point Santa Cruz, California)**.  
+The analysis covers the years **2020–2023**.
+
+---
+
+## Data Cleaning
+
+The raw data was **noisy, incomplete, and irregular**. The cleaning process involved several steps:
+
+![Raw data](raw.png)
+
+1. **Handling Missing Samples**  
+   - The dataset contained both large gaps and single-sample gaps.  
+   - **Large gaps**: left as-is.  
+   - **Medium gaps**: filled using **linear interpolation**.  
+   - **Small gaps**: filled using a **moving average (MA)** filter.  
+   - Continuous data is essential for time series modeling, so gap treatment was a priority.
+
+2. **Seasonality Adjustments**  
+   - **Yearly seasonality**: Adjusted by subtracting each observation from the value recorded exactly one year earlier.  
+   - **Tidal seasonality**: The tidal cycle is ~24.2 hours, while the dataset has a 30-minute frequency.  
+     - Used **Fourier terms** (`sin` and `cos`) in a regression to estimate the tidal component.  
+     - Subtracted the estimated tidal pattern from the data.
+
+3. **Frequency Aggregation**  
+   - Converted the data from **0.5-hourly** to **12-hourly** intervals.  
+   - Aggregation was done by averaging within each 12-hour window.  
+   - This reduced noise and computational cost.
+
+![Seasonality-adjusted data](seas.png)
+
+---
+
+## Modeling
+
+1. **Preliminary Analysis**  
+   - Examined **PACF** and **ACF** plots.  
+   - Data exhibited **long-memory behavior** and very small PACF coefficients.  
+   - Conducted **Augmented Dickey–Fuller (ADF) test** → stationarity was rejected.
+
+2. **Train–Test Split**  
+   - Used the longest continuous segment as the **training set**.  
+   - Test data consisted of **two disjoint periods** with different statistical behaviors.
+
+![Train–test split](train_test.png)
+
+3. **Model Selection**  
+   - Chose an **ARFIMA(p, d, q)** model due to long-memory characteristics.  
+   - Since data had large gaps, predictions were **conditional** on the previous two real (not predicted) values.  
+   - Implemented **fractional differencing** before estimation.  
+   - Performed a **grid search** over multiple `p` and `d` values.  
+   - Selected the model with the lowest **AIC** and **BIC** → **ARFIMA(2, 0.5, 0)**.
+
+4. **Results**  
+   - Model applied to training and both test sets.  
+   - Predictions were generated using the previous two actual samples.
+
+![Prediction – Test Set 1](output_pred_tur.png)  
+![Prediction – Test Set 2](output_predc.png)  
+![Prediction – Training Set](output_pred.png)
+
+---
+
+## Summary
+
+This project demonstrates the application of **econometric modeling techniques** to environmental time series data.  
+The cleaning process addressed irregular sampling and multiple seasonalities, while ARFIMA modeling captured the long-memory nature of wave height dynamics.
 
 
-### data cleaning
-The raw data was really noisy and dirty so i cleaned it and did some adjustments
-![raw data](raw.png)
+![final prediction test1](output_pred_tur.png)
+![final prediction test2](output_predc.png)
+![final predictions train](output_pred.png)
 
-Cleaning - there were alot of missing samples along the way, some of them made big gaps and some 1 sample gap, in time series analysis it's very problematic to work with non continous data. 
-For the big gaps, i left them as is, for the medium gaps, i used techinques like linear interpolation, and for the small ones i used MA to fill in.
-
-Next, i adjusted for seasonality effects, the affects we have are yearly seasonality and tidal seasonality.
-For adjusting yearly seasonality i just looked at the diffrence between each sample and the previous's year sample. For the tidal seasonality, i couldnt use simple techniques because the tidal cycle is one of 24.2 hours, and my data was with freq of 0.5. so i used fourier terms for time in regression to estimate the pattern and then adjusted according to it
-
-lastly, i adjusted the frequency from 0.5 hours to 12 hours, which helped both computationally and made the data less noisy, i did it by averaging each 12 hours.
-
-![seasonalized data](seas.png)
-
-## modeling
-
-For modeling, i first checked the PACF and ACF functions, since the data showed a long memory behaviour, while having very small coefficients for the PACG function, i checked with ADF test for stationarity, and rejected it.
-Since the data had big gaps i used them as train-test data sets, where my longest continous part was the train, and for test i used 2 other parts which behaved very differently from each other.
-
-![train-test data](train_test.png)
-
-I went with an ARFIMA(ar, d, 0) models, for model selection i did a grid search over multiple ar and d combinations. to adjust the data for ARFIMA i also implemented fractional diffrencing before estimating. For model selection i picked the model with lowest AIC and BIC, the chosen model was ARFIMA(2,0.5,0).
-
-
-Then i used my model on the train adtasets, estimating each sample base on the previous 2 (real, not predicted) samples.
-
-![final predictions](output_pred.png)
 
