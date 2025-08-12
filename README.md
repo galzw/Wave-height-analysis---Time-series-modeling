@@ -15,7 +15,7 @@ The analysis covers the years **2020–2023**.
 
 The raw data was **noisy, incomplete, and irregular**. The cleaning process involved several steps:
 
-![Raw data](raw.png)
+![Raw data](plt/raw_data.png)
 
 1. **Handling Missing Samples**  
    - The dataset contained both large gaps and single-sample gaps.  
@@ -35,7 +35,7 @@ The raw data was **noisy, incomplete, and irregular**. The cleaning process invo
    - Aggregation was done by averaging within each 12-hour window.  
    - This reduced noise and computational cost.
 
-![Seasonality-adjusted data](seas.png)
+![Seasonality-adjusted data](plt/seas_data.png)
 
 ---
 
@@ -50,7 +50,7 @@ The raw data was **noisy, incomplete, and irregular**. The cleaning process invo
    - Used the longest continuous segment as the **training set**.  
    - Test data consisted of **two disjoint periods** with different statistical behaviors.
 
-![Train–test split](train_test.png)
+![Train–test split](plt/train-test.png)
 
 3. **Model Selection**  
    - Chose an **ARFIMA(p, d, q)** model due to long-memory characteristics.  
@@ -63,9 +63,9 @@ The raw data was **noisy, incomplete, and irregular**. The cleaning process invo
    - Model applied to training and both test sets.  
    - Predictions were generated using the previous two actual samples.
 
-![Prediction – Test Set 1](output_pred_tur.png)  
-![Prediction – Test Set 2](output_predc.png)  
-![Prediction – Training Set](output_pred.png)
+![Prediction – Test Set 1](plt/pred1.png)  
+![Prediction – Test Set 2](plt/pred_test2.png)  
+![Prediction – Training Set](plt/train_pred.png)
 
 ---
 
