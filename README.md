@@ -54,7 +54,6 @@ The raw data was **noisy, incomplete, and irregular**. The cleaning process invo
 
 3. **Model Selection**  
    - Chose an **ARFIMA(p, d, q)** model due to long-memory characteristics.  
-   - Since data had large gaps, predictions were **conditional** on the previous two real (not predicted) values.  
    - Implemented **fractional differencing** before estimation.  
    - Performed a **grid search** over multiple `p` and `d` values.  
    - Selected the model with the lowest **AIC** and **BIC** → **ARFIMA(2, 0.5, 0)**.
